@@ -2,6 +2,8 @@ package com.github.psinalberth.quickcardz.service;
 
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -32,7 +34,7 @@ public class CardSetService {
 		return repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("No records found for given id."));
 	}
 	
-	public CardSetDto save(CardSetDto dto) {		
+	public CardSetDto save(@Valid CardSetDto dto) {		
 		CardSet set = mapper.fromDtoToEntity(dto);
 		set = repository.save(set);
 		return mapper.fromEntityToDto(set);

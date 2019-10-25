@@ -2,6 +2,8 @@ package com.github.psinalberth.quickcardz.controller;
 
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -45,13 +47,13 @@ public class CardSetController {
 	
 	@PostMapping
 	@ApiOperation(value="Create a new flashcard set.")
-	public CardSetDto save(@RequestBody CardSetDto set) {
+	public CardSetDto save(@Valid @RequestBody CardSetDto set) {
 		return service.save(set);
 	}
 	
 	@PutMapping
 	@ApiOperation(value="Update an existing flashcard set.")
-	public CardSetDto update(@RequestBody CardSetDto set) {
+	public CardSetDto update(@Valid @RequestBody CardSetDto set) {
 		return service.update(set);
 	}
 	
