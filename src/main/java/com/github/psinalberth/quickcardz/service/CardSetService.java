@@ -4,7 +4,9 @@ import java.util.List;
 
 import javax.validation.Valid;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
 import com.github.psinalberth.quickcardz.exception.ResourceNotFoundException;
@@ -19,8 +21,7 @@ public class CardSetService {
 	private final CardSetRepository repository;
 	private final CardSetMapper mapper;
 	
-	@Autowired
-	public CardSetService(CardSetRepository repository, CardSetMapper mapper) {
+	public CardSetService(final CardSetRepository repository, final CardSetMapper mapper) {
 		this.repository = repository;
 		this.mapper = mapper;
 	}
@@ -49,6 +50,13 @@ public class CardSetService {
 	
 	public List<CardSetDto> findAll() {
 		return mapper.map(repository.findAll());
+	}
+	
+	public Page<CardSetDto> findAll(Integer page, Integer linesPerPage, String orderBy, String direction) {
+		
+		Direction sortDirection = direction == null ? Direction.ASC : Direction.valueOf(direction.toUpperCase());		
+		PageRequest pageRequest = PageRequest.of(page, linesPerPage, sortDirection, orderBy);		
+		return repository.findAll(pageRequest).map(mapper::fromEntityToDto);
 	}
 
 	public void delete(Long id) {

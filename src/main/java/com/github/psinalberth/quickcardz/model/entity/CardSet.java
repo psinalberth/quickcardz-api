@@ -34,6 +34,6 @@ public class CardSet extends AbstractEntity {
 	@Column(nullable = true)
 	private String description;
 	
-	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "cardSet", fetch = FetchType.EAGER)
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "cardSet", fetch = FetchType.LAZY)
 	private List<Flashcard> flashcards;
 }

@@ -2,7 +2,6 @@ package com.github.psinalberth.quickcardz.service;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.github.psinalberth.quickcardz.exception.ResourceNotFoundException;
@@ -17,8 +16,7 @@ public class FlashcardService {
 	private final FlashcardRepository repository;
 	private final FlashcardMapper mapper;
 	
-	@Autowired
-	public FlashcardService(FlashcardRepository repository, FlashcardMapper mapper) {
+	public FlashcardService(final FlashcardRepository repository, final FlashcardMapper mapper) {
 		this.repository = repository;
 		this.mapper = mapper;
 	}

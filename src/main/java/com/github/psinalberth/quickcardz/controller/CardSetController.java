@@ -1,10 +1,8 @@
 package com.github.psinalberth.quickcardz.controller;
 
-import java.util.List;
-
 import javax.validation.Valid;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,6 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.github.psinalberth.quickcardz.model.vo.CardSetDto;
@@ -28,15 +27,18 @@ public class CardSetController {
 	
 	private final CardSetService service;	
 	
-	@Autowired
-	public CardSetController(CardSetService service) {
+	public CardSetController(final CardSetService service) {
 		this.service = service;
 	}
 	
 	@GetMapping
-	@ApiOperation("Find all sets.")
-	public List<CardSetDto> findAll() {
-		return service.findAll();
+	@ApiOperation("Find sets (using pagination).")
+	public ResponseEntity<Page<CardSetDto>> findAllCards(
+			@RequestParam(value = "page", defaultValue = "0" ) Integer page,
+			@RequestParam(value = "linesPerPage", defaultValue = "20" ) Integer linesPerPage,
+			@RequestParam(value = "orderBy", defaultValue = "title" ) String orderBy,
+			@RequestParam(value = "direction", defaultValue = "ASC" ) String direction) {
+		return ResponseEntity.ok(service.findAll(page, linesPerPage, orderBy, direction));
 	}
 	
 	@GetMapping(path = "/{id}")
