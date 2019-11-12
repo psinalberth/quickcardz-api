@@ -9,18 +9,27 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.stereotype.Component;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.stereotype.Service;
+
+import com.github.psinalberth.quickcardz.service.UserService;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 
-@Component
+@Service
 public class JwtTokenProvider {
 	
 	private String secretKey = "secret";	
 	private long expirationTimeInMillis = 3600000;
+	
+	private final UserService userService;
+	
+	public JwtTokenProvider(final UserService userService) {
+		this.userService = userService;
+	}
 	
 	@PostConstruct
 	public void postConstruct() {
@@ -29,12 +38,12 @@ public class JwtTokenProvider {
 	
 	public String generateToken(String username, Collection<String> roles) {
 		
-		Date now = new Date();
-		Date expirationDate = new Date(now.getTime() + expirationTimeInMillis);
+		Date creationDate = new Date();
+		Date expirationDate = new Date(creationDate.getTime() + expirationTimeInMillis);
 		
 		return Jwts.builder()
 				.setSubject(username)
-				.setIssuedAt(now)
+				.setIssuedAt(creationDate)
 				.setExpiration(expirationDate)
 				.signWith(SignatureAlgorithm.HS512, secretKey)
 				.compact();
@@ -55,7 +64,8 @@ public class JwtTokenProvider {
 	}
 	
 	public Authentication authentication(String token) {
-		return new UsernamePasswordAuthenticationToken(getUsername(token), null, null);
+		UserDetails userDetails = this.userService.loadUserByUsername(getUsername(token));
+		return new UsernamePasswordAuthenticationToken(userDetails,  null, userDetails.getAuthorities());
 	}
 
 	public String resolveToken(HttpServletRequest request) {

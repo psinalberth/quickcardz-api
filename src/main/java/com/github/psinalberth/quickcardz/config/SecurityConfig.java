@@ -6,6 +6,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import com.github.psinalberth.quickcardz.security.JwtTokenFilterConfigurer;
 import com.github.psinalberth.quickcardz.security.JwtTokenProvider;
@@ -23,11 +24,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         "/configuration/security",
         "/swagger-ui.html",
         "/webjars/**",
-        "/auth/**"
+        "/auth/**",
+        "/register"
     };
 	
 	public SecurityConfig(final JwtTokenProvider jwtTokenProvider) {
 		this.jwtTokenProvider = jwtTokenProvider;
+	}
+	
+	@Bean
+	public BCryptPasswordEncoder passwordEncoder() {
+		return new BCryptPasswordEncoder();
 	}
 	
 	@Bean
